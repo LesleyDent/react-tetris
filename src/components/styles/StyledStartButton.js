@@ -1,3 +1,4 @@
+
 import styled from 'styled-components';
 
 export const StyledStartButton = styled.button`
@@ -10,8 +11,8 @@ export const StyledStartButton = styled.button`
   border: none;
   color: white;
   background: #333;
-  font-family: Pixel, Helvetica, sans-serif;
+  font-family: Pixel, Arial, Helvetica, sans-serif;
   font-size: 1rem;
   outline: none;
   cursor: pointer;
-`
+`;

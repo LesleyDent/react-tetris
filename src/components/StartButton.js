@@ -5,4 +5,4 @@ const StartButton = ({ callback }) => (
   <StyledStartButton onClick={callback}>Start Game</StyledStartButton>
 )
 
-export default StartButton
+export default StartButton;
