@@ -8,7 +8,7 @@ export const useGameStatus = rowsCleared => {
   const linePoints = [40, 100, 300, 1200];
 
   const calcScore = useCallback(() => {
-    // is there a score?
+    // if theres a score
     if (rowsCleared > 0) {
       setScore(prev => prev + linePoints[rowsCleared - 1] * (level + 1));
       setRows(prev => prev + rowsCleared);
@@ -19,5 +19,5 @@ export const useGameStatus = rowsCleared => {
     calcScore();
   }, [calcScore, rowsCleared, score]);
 
-  return [score, setScore, rows, setRows, level, setLevel]
-}
+  return [score, setScore, rows, setRows, level, setLevel];
+};

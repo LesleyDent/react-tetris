@@ -7,7 +7,6 @@ export const useStage = (player, resetPlayer) => {
 
   useEffect(() => {
     setRowsCleared(0);
-
     const sweepRows = newStage =>
       newStage.reduce((ack, row) => {
         if (row.findIndex(cell => cell[0] === 0) === -1) {
@@ -17,37 +16,48 @@ export const useStage = (player, resetPlayer) => {
         }
         ack.push(row);
         return ack;
-      }, [])
+      }, []);
 
     const updateStage = prevStage => {
-      // First clear the stage
-      let newStage = prevStage.map(row =>
-        row.map(cell => (cell[1] === 'clear' ? [0, 'clear'] : cell)),
+      // flush the stage
+      // probably faster with For loops?
+      const newStage = prevStage.map(row =>
+        row.map(cell => (cell[1] === 'clear' ? [0, 'clear'] : cell))
       );
 
       // Then draw the tetromino
-      console.log(player.tetromino, 'PLAYER')
-      player.tetromino.forEach((row, y) => {
-        row.forEach((value, x) => {
-          if (value !== 0) {
-            newStage[y + player.pos.y][x + player.pos.x] = [
-              value,
-              `${player.collided ? 'merged' : 'clear'}`,
-            ];
-          };
+      if (player && player.tetromino) {
+        player.tetromino.forEach((row, y) => {
+          row.forEach((value, x) => {
+            let stageColumn = y + player.pos.y;
+            let stageCell = x + player.pos.x;
+            if (value && newStage[stageColumn] && newStage[stageColumn][stageCell]) {
+              newStage[stageColumn][stageCell] = [
+                value,
+                player.collided ? 'merged' : 'clear'
+              ];
+            } else {
+              console.log('ELSE')
+            }
+          });
         });
-      });
-      // Then check if collided
+      }
+      // Then check if we got some score if collided
       if (player.collided) {
         resetPlayer();
         return sweepRows(newStage);
-      };
-
+      }
       return newStage;
     };
 
     setStage(prev => updateStage(prev));
-  }, [player, resetPlayer]);
+  }, [
+    player.collided,
+    player.pos.x,
+    player.pos.y,
+    player.tetromino,
+    resetPlayer,
+  ]);
 
   return [stage, setStage, rowsCleared];
 };

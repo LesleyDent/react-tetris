@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 
 import { TETROMINOS, randomTetromino } from '../tetrominos';
 import { STAGE_WIDTH, checkCollision } from '../gameHelpers';
@@ -10,17 +10,21 @@ export const usePlayer = () => {
     collided: false,
   });
 
-  const rotate = (matrix, dir) => {
-    // Make the rows become collumns
-    const rotatedTetro = matrix.map((_, index) =>
-      matrix.map(col => col[index]),
-    );
-    // Reverse each row to get rotated matrix
-    if (dir > 0) return rotatedTetro.map(row => row.reverse());
-    return rotatedTetro.reverse();
-  };
+  const prevState = useRef()
 
-  const playerRotate = (stage, dir) => {
+  useEffect(() => {
+    prevState.current = player
+  })
+
+  function rotate(matrix, dir) {
+    // turn rows to collumns
+    const mtrx = matrix.map((_, index) => matrix.map(column => column[index]));
+    // Reverse each row to get a rotaded matrix
+    if (dir > 0) return mtrx.map(row => row.reverse());
+    return mtrx.reverse();
+  }
+
+  function playerRotate(stage, dir) {
     const clonedPlayer = JSON.parse(JSON.stringify(player));
     clonedPlayer.tetromino = rotate(clonedPlayer.tetromino, dir);
 
@@ -33,20 +37,35 @@ export const usePlayer = () => {
         rotate(clonedPlayer.tetromino, -dir);
         clonedPlayer.pos.x = pos;
         return;
-      };
-    };
+      }
+    }
     setPlayer(clonedPlayer);
-  };
+  }
 
-  const updatePlayerPos = ({ x, y, collided }) => {
-    setPlayer(prev => ({
-      ...prev,
-      pos: { x: (prev.pos.x += x), y: (prev.pos.y += y) },
-      collided,
-    }));
-  };
+  useEffect(() => {
+    console.log(player, 'PLAYER')
+  }, [player])
+
+  const updatePlayerPos = useCallback(({ x, y, collided }) => {
+    console.log(prevState.current, 'CURRENT')
+    const Obj = { ...prevState.current }
+    Obj.pos.y += y
+    Obj.pos.x += x
+    Obj.collided = collided
+    console.log(Obj, 'OBJ')
+    setPlayer(Obj)
+    // setPlayer(prev => {
+    //   // console.log(prev.pos.y, 'PREV Y')
+    //   return {
+    //     ...prev,
+    //     pos: { x: (prev.pos.x += x), y: (prev.pos.y += y) },
+    //     collided,
+    //   }
+    // });
+  }, []);
 
   const resetPlayer = useCallback(() => {
+    // console.log('RESET PLAYER')
     setPlayer({
       pos: { x: STAGE_WIDTH / 2 - 2, y: 0 },
       tetromino: randomTetromino().shape,
