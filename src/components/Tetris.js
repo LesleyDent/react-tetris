@@ -13,7 +13,7 @@ import { useGameStatus } from '../hooks/useGameStatus';
 import Stage from './Stage';
 import Display from './Display';
 import StartButton from './StartButton';
-import Music from './Music';
+import MusicButton from './MusicButton';
 
 const Tetris = () => {
   const [dropTime, setDropTime] = useState(null);
@@ -123,10 +123,10 @@ const Tetris = () => {
                 <Display text={`Score: ${score}`} />
                 <Display text={`rows: ${rows}`} />
                 <Display text={`Level: ${level}`} />
-                <Display text={'Music:'} />
               </div>
             )}
           <StartButton callback={startGame} />
+          <MusicButton />
         </aside>
       </StyledTetris>
     </StyledTetrisWrapper>
