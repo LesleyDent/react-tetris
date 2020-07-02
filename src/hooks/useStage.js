@@ -20,7 +20,7 @@ export const useStage = (player, resetPlayer) => {
 
     const updateStage = prevStage => {
       // flush the stage
-      // probably faster with For loops?
+      // probably faster with For loop?
       const newStage = prevStage.map(row =>
         row.map(cell => (cell[1] === 'clear' ? [0, 'clear'] : cell))
       );
